@@ -1,279 +1,1154 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FarmaCare+</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pharmacare – Pengingat & Pemeriksa Obat</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --sage: #4A7C6F;
+      --sage-light: #6B9E8F;
+      --sage-pale: #EEF5F3;
+      --sage-deep: #2D5248;
+      --cream: #FAF8F4;
+      --warm-white: #FFFFFF;
+      --ink: #1A1F2E;
+      --ink-mid: #3D4558;
+      --ink-soft: #7A8299;
+      --gold: #C9A96E;
+      --gold-light: #F5EDD8;
+      --rose-soft: #E8A0A0;
+      --rose-pale: #FDF0F0;
+      --border: #E8E4DC;
+      --border-soft: #F0EDE7;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: var(--cream);
+      color: var(--ink);
+      min-height: 100vh;
+    }
+
+    /* ─── SCROLLBAR ─── */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--cream); }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 99px; }
+
+    /* ─── NAVBAR ─── */
+    nav {
+      background: var(--warm-white);
+      padding: 0 2.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 68px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      border-bottom: 1px solid var(--border-soft);
+      box-shadow: 0 1px 24px rgba(26,31,46,.05);
+    }
+
+    .logo {
+      font-family: 'Playfair Display', serif;
+      font-weight: 700;
+      font-size: 1.45rem;
+      color: var(--ink);
+      letter-spacing: -.3px;
+      display: flex;
+      align-items: center;
+      gap: .6rem;
+    }
+    .logo-icon {
+      width: 36px; height: 36px;
+      background: linear-gradient(135deg, var(--sage), var(--sage-light));
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: .95rem;
+      box-shadow: 0 4px 12px rgba(74,124,111,.25);
+    }
+    .logo em { color: var(--sage); font-style: normal; }
+
+    .nav-tabs { display: flex; gap: .25rem; }
+    .nav-tab {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: .83rem;
+      font-weight: 500;
+      color: var(--ink-soft);
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: .5rem 1.1rem;
+      border-radius: 10px;
+      transition: all .2s;
+      display: flex;
+      align-items: center;
+      gap: .4rem;
+    }
+    .nav-tab:hover { color: var(--ink); background: var(--cream); }
+    .nav-tab.active {
+      color: var(--sage-deep);
+      background: var(--sage-pale);
+      font-weight: 600;
+    }
+    .nav-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--sage);
+      display: none;
+    }
+    .nav-tab.active .nav-dot { display: block; }
+
+    /* ─── HERO ─── */
+    .hero {
+      background: var(--ink);
+      padding: 5rem 2.5rem 3.5rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-texture {
+      position: absolute;
+      inset: 0;
+      background-image:
+        radial-gradient(ellipse 80% 60% at 50% -10%, rgba(74,124,111,.35) 0%, transparent 60%),
+        radial-gradient(ellipse 40% 40% at 80% 80%, rgba(201,169,110,.12) 0%, transparent 50%);
+      pointer-events: none;
+    }
+    .hero-grain {
+      position: absolute;
+      inset: 0;
+      opacity: .035;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+      pointer-events: none;
+    }
+    .hero-inner { position: relative; z-index: 1; }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: .5rem;
+      background: rgba(74,124,111,.18);
+      border: 1px solid rgba(74,124,111,.35);
+      color: var(--sage-light);
+      font-size: .75rem;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      padding: .4rem 1.1rem;
+      border-radius: 100px;
+      margin-bottom: 2rem;
+    }
+    .hero-badge span { width: 5px; height: 5px; border-radius: 50%; background: var(--sage-light); }
+
+    .hero h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.6rem, 6vw, 4.2rem);
+      font-weight: 700;
+      color: #fff;
+      line-height: 1.15;
+      margin-bottom: 1.25rem;
+      letter-spacing: -.5px;
+    }
+    .hero h1 em {
+      color: transparent;
+      background: linear-gradient(90deg, var(--sage-light), var(--gold));
+      -webkit-background-clip: text;
+      background-clip: text;
+      font-style: normal;
+    }
+    .hero p {
+      color: rgba(255,255,255,.5);
+      font-size: 1.05rem;
+      max-width: 480px;
+      margin: 0 auto 2.5rem;
+      line-height: 1.7;
+      font-weight: 300;
+    }
+
+    .hero-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: .6rem;
+      background: var(--sage);
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: .95rem;
+      font-weight: 600;
+      padding: .95rem 2.2rem;
+      border-radius: 14px;
+      transition: all .25s;
+      box-shadow: 0 8px 28px rgba(74,124,111,.35);
+    }
+    .hero-cta:hover {
+      background: var(--sage-light);
+      transform: translateY(-2px);
+      box-shadow: 0 12px 36px rgba(74,124,111,.45);
+    }
+    .hero-cta-arrow {
+      font-size: 1rem;
+      transition: transform .2s;
+    }
+    .hero-cta:hover .hero-cta-arrow { transform: translateX(4px); }
+
+    .hero-stats {
+      display: flex;
+      justify-content: center;
+      gap: 0;
+      margin-top: 3.5rem;
+      background: rgba(255,255,255,.05);
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 18px;
+      padding: 1.5rem 2rem;
+      max-width: 520px;
+      margin-left: auto;
+      margin-right: auto;
+      backdrop-filter: blur(10px);
+    }
+    .stat {
+      text-align: center;
+      flex: 1;
+      position: relative;
+    }
+    .stat + .stat::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 50%;
+      transform: translateY(-50%);
+      width: 1px; height: 40%;
+      background: rgba(255,255,255,.12);
+    }
+    .stat-num {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--sage-light);
+      line-height: 1;
+      margin-bottom: .3rem;
+    }
+    .stat-label {
+      font-size: .75rem;
+      color: rgba(255,255,255,.35);
+      font-weight: 400;
+      letter-spacing: .5px;
+    }
+
+    /* ─── FEATURE CARDS ─── */
+    .features {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.25rem;
+      max-width: 880px;
+      margin: -2rem auto 3rem;
+      padding: 0 1.5rem;
+      position: relative;
+      z-index: 10;
+    }
+    .feature-card {
+      background: var(--warm-white);
+      border-radius: 18px;
+      padding: 1.75rem;
+      box-shadow: 0 4px 24px rgba(26,31,46,.07);
+      border: 1px solid var(--border-soft);
+      transition: transform .25s, box-shadow .25s;
+    }
+    .feature-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 12px 40px rgba(26,31,46,.1);
+    }
+    .feature-icon {
+      width: 46px; height: 46px;
+      border-radius: 13px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.3rem;
+      margin-bottom: 1.1rem;
+    }
+    .feature-card:nth-child(1) .feature-icon { background: var(--sage-pale); }
+    .feature-card:nth-child(2) .feature-icon { background: var(--gold-light); }
+    .feature-card:nth-child(3) .feature-icon { background: var(--rose-pale); }
+    .feature-card h3 {
+      font-family: 'Playfair Display', serif;
+      font-weight: 700;
+      font-size: 1rem;
+      color: var(--ink);
+      margin-bottom: .45rem;
+    }
+    .feature-card p {
+      font-size: .83rem;
+      color: var(--ink-soft);
+      line-height: 1.55;
+      font-weight: 400;
+    }
+
+    /* ─── SECTIONS ─── */
+    .section { display: none; max-width: 880px; margin: 0 auto; padding: 0 1.5rem 5rem; }
+    .section.active { display: block; }
+
+    .section-header {
+      display: flex;
+      align-items: baseline;
+      gap: .75rem;
+      margin-bottom: 1.75rem;
+      padding-top: 2.5rem;
+    }
+    .section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.65rem;
+      font-weight: 700;
+      color: var(--ink);
+    }
+    .section-subtitle {
+      font-size: .82rem;
+      color: var(--ink-soft);
+      font-weight: 400;
+    }
+
+    /* ─── SEARCH ─── */
+    .search-box {
+      background: var(--warm-white);
+      border-radius: 20px;
+      padding: 2rem;
+      box-shadow: 0 2px 20px rgba(26,31,46,.06);
+      border: 1px solid var(--border-soft);
+      margin-bottom: 2rem;
+    }
+    .search-label {
+      font-size: .8rem;
+      font-weight: 600;
+      color: var(--ink-soft);
+      letter-spacing: .5px;
+      text-transform: uppercase;
+      margin-bottom: .75rem;
+    }
+    .search-row { display: flex; gap: .75rem; }
+    .search-input {
+      flex: 1;
+      border: 1.5px solid var(--border);
+      border-radius: 12px;
+      padding: .9rem 1.2rem;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: .9rem;
+      color: var(--ink);
+      background: var(--cream);
+      transition: border-color .2s, box-shadow .2s;
+      outline: none;
+    }
+    .search-input:focus {
+      border-color: var(--sage);
+      box-shadow: 0 0 0 3px rgba(74,124,111,.1);
+    }
+    .search-input::placeholder { color: var(--ink-soft); opacity: .6; }
+
+    /* ─── BUTTONS ─── */
+    .btn {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 600;
+      font-size: .88rem;
+      border: none;
+      cursor: pointer;
+      border-radius: 12px;
+      padding: .9rem 1.6rem;
+      transition: all .2s;
+      letter-spacing: .1px;
+    }
+    .btn-primary {
+      background: var(--sage);
+      color: #fff;
+      box-shadow: 0 4px 14px rgba(74,124,111,.2);
+    }
+    .btn-primary:hover {
+      background: var(--sage-deep);
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(74,124,111,.3);
+    }
+    .btn-secondary {
+      background: var(--ink);
+      color: #fff;
+    }
+    .btn-secondary:hover { background: var(--ink-mid); }
+    .btn-outline {
+      background: transparent;
+      color: var(--sage);
+      border: 1.5px solid var(--sage);
+    }
+    .btn-outline:hover { background: var(--sage-pale); }
+    .btn-sm { padding: .5rem 1rem; font-size: .8rem; border-radius: 9px; }
+    .btn-danger {
+      background: var(--rose-pale);
+      color: var(--rose-soft);
+      border: 1px solid rgba(232,160,160,.3);
+    }
+    .btn-danger:hover {
+      background: var(--rose-soft);
+      color: #fff;
+      border-color: var(--rose-soft);
+    }
+
+    /* Search result */
+    #search-result {
+      background: var(--sage-pale);
+      border: 1px solid rgba(74,124,111,.2);
+      border-radius: 16px;
+      padding: 1.5rem 1.75rem;
+      margin-top: 1.25rem;
+      display: none;
+      animation: fadeSlide .3s ease;
+    }
+    #search-result h4 {
+      font-family: 'Playfair Display', serif;
+      font-weight: 700;
+      font-size: 1.15rem;
+      color: var(--sage-deep);
+      margin-bottom: 1rem;
+    }
+    .result-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: .75rem;
+    }
+    .result-item {
+      background: var(--warm-white);
+      border-radius: 12px;
+      padding: .85rem 1rem;
+      border: 1px solid var(--border-soft);
+    }
+    .result-item .label {
+      font-size: .72rem;
+      font-weight: 600;
+      color: var(--sage);
+      text-transform: uppercase;
+      letter-spacing: .8px;
+      margin-bottom: .3rem;
+    }
+    .result-item .value {
+      font-size: .88rem;
+      color: var(--ink);
+      font-weight: 500;
+    }
+    #no-result {
+      background: var(--rose-pale);
+      border: 1px solid rgba(232,160,160,.25);
+      border-radius: 14px;
+      padding: 1.1rem 1.5rem;
+      margin-top: 1.25rem;
+      display: none;
+      color: #c47a7a;
+      font-size: .88rem;
+      font-weight: 500;
+    }
+
+    /* ─── MEDICINE CARDS ─── */
+    .medicine-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+      gap: 1.25rem;
+    }
+    .medicine-card {
+      background: var(--warm-white);
+      border-radius: 18px;
+      padding: 1.5rem;
+      box-shadow: 0 2px 16px rgba(26,31,46,.06);
+      border: 1px solid var(--border-soft);
+      transition: all .25s;
+      position: relative;
+      overflow: hidden;
+      animation: fadeSlide .35s ease both;
+    }
+    .medicine-card::after {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 3px; height: 100%;
+      background: linear-gradient(180deg, var(--sage), var(--sage-light));
+      border-radius: 3px 0 0 3px;
+    }
+    .medicine-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 10px 32px rgba(26,31,46,.1);
+    }
+    .medicine-card.taken::after {
+      background: var(--border);
+    }
+    .medicine-card.taken { opacity: .65; }
+
+    .card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 1rem;
+      padding-left: .5rem;
+    }
+    .med-name {
+      font-family: 'Playfair Display', serif;
+      font-weight: 700;
+      font-size: 1.05rem;
+      color: var(--ink);
+    }
+    .status-badge {
+      font-size: .7rem;
+      font-weight: 600;
+      padding: .28rem .7rem;
+      border-radius: 100px;
+      letter-spacing: .3px;
+    }
+    .badge-active {
+      background: var(--sage-pale);
+      color: var(--sage-deep);
+      border: 1px solid rgba(74,124,111,.2);
+    }
+    .badge-taken {
+      background: var(--border-soft);
+      color: var(--ink-soft);
+    }
+    .med-info {
+      font-size: .82rem;
+      color: var(--ink-soft);
+      margin-bottom: .35rem;
+      line-height: 1.45;
+      padding-left: .5rem;
+    }
+    .med-info strong { color: var(--ink-mid); font-weight: 600; }
+    .med-reminder {
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+      background: var(--sage-pale);
+      border-radius: 10px;
+      padding: .55rem .85rem;
+      margin: .9rem 0;
+      font-size: .8rem;
+      font-weight: 500;
+      color: var(--sage-deep);
+    }
+    .card-actions { display: flex; gap: .6rem; }
+
+    /* ─── FORM ─── */
+    .add-form {
+      background: var(--warm-white);
+      border-radius: 20px;
+      padding: 2rem;
+      box-shadow: 0 2px 20px rgba(26,31,46,.06);
+      border: 1px solid var(--border-soft);
+      margin-bottom: 2.5rem;
+    }
+    .form-title {
+      font-family: 'Playfair Display', serif;
+      font-weight: 700;
+      font-size: 1.2rem;
+      color: var(--ink);
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: .6rem;
+    }
+    .form-title-icon {
+      width: 32px; height: 32px;
+      background: var(--sage-pale);
+      border-radius: 9px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: .85rem;
+    }
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.1rem;
+      margin-bottom: 1.1rem;
+    }
+    .form-group { display: flex; flex-direction: column; gap: .4rem; }
+    .form-group.full { grid-column: 1 / -1; }
+    label {
+      font-size: .78rem;
+      font-weight: 600;
+      color: var(--ink-mid);
+      letter-spacing: .3px;
+    }
+    input[type=text], input[type=time], textarea, select {
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      padding: .75rem 1rem;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: .88rem;
+      color: var(--ink);
+      background: var(--cream);
+      outline: none;
+      transition: border-color .2s, box-shadow .2s;
+      width: 100%;
+    }
+    input:focus, textarea:focus, select:focus {
+      border-color: var(--sage);
+      box-shadow: 0 0 0 3px rgba(74,124,111,.1);
+    }
+    input::placeholder, textarea::placeholder { color: var(--ink-soft); opacity: .6; }
+    textarea { resize: vertical; min-height: 72px; }
+
+    .time-row { display: flex; gap: .6rem; margin-bottom: .6rem; }
+    .time-inputs { display: flex; flex-wrap: wrap; gap: .5rem; }
+    .time-tag {
+      display: flex;
+      align-items: center;
+      gap: .4rem;
+      background: var(--sage-pale);
+      border: 1px solid rgba(74,124,111,.25);
+      color: var(--sage-deep);
+      padding: .3rem .65rem .3rem .75rem;
+      border-radius: 100px;
+      font-size: .8rem;
+      font-weight: 500;
+    }
+    .time-tag button {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: .85rem;
+      line-height: 1;
+      color: var(--sage);
+      opacity: .7;
+      transition: opacity .15s;
+    }
+    .time-tag button:hover { opacity: 1; }
+
+    /* ─── HISTORY ─── */
+    .history-date {
+      font-size: .72rem;
+      font-weight: 700;
+      color: var(--ink-soft);
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      margin: 1.75rem 0 .75rem;
+      display: flex;
+      align-items: center;
+      gap: .6rem;
+    }
+    .history-date::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border-soft);
+    }
+    .history-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--warm-white);
+      border-radius: 14px;
+      padding: 1rem 1.25rem;
+      margin-bottom: .6rem;
+      border: 1px solid var(--border-soft);
+      font-size: .88rem;
+      transition: box-shadow .2s;
+    }
+    .history-item:hover { box-shadow: 0 4px 16px rgba(26,31,46,.07); }
+    .history-item .med-col {
+      font-weight: 600;
+      color: var(--ink);
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+    }
+    .med-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--sage);
+    }
+    .history-item .time-col {
+      color: var(--ink-soft);
+      font-size: .8rem;
+    }
+    .history-item .check {
+      width: 22px; height: 22px;
+      border-radius: 50%;
+      background: var(--sage-pale);
+      color: var(--sage);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: .7rem;
+      font-weight: 700;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 3.5rem 2rem;
+      color: var(--ink-soft);
+      font-size: .88rem;
+    }
+    .empty-state .emoji {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+      opacity: .5;
+    }
+    .empty-state p { line-height: 1.6; }
+
+    /* ─── ANIMATIONS ─── */
+    @keyframes fadeSlide {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ─── TOAST ─── */
+    .toast {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background: var(--ink);
+      color: #fff;
+      padding: .85rem 1.4rem;
+      border-radius: 14px;
+      font-size: .86rem;
+      font-weight: 500;
+      box-shadow: 0 8px 32px rgba(26,31,46,.25);
+      display: none;
+      z-index: 999;
+      animation: slideUp .3s ease;
+      border-left: 3px solid var(--sage);
+      max-width: 300px;
+    }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 640px) {
+      nav { padding: 0 1rem; }
+      .nav-tab span { display: none; }
+      .hero { padding: 3rem 1.25rem 2rem; }
+      .hero-stats { margin-left: 1rem; margin-right: 1rem; padding: 1.25rem; }
+      .features { grid-template-columns: 1fr; margin-top: -1rem; padding: 0 1rem; }
+      .form-grid { grid-template-columns: 1fr; }
+      .result-grid { grid-template-columns: 1fr; }
+      .section { padding: 0 1rem 4rem; }
+      nav { padding: 0 1rem; }
+    }
+  </style>
 </head>
-<body class="min-h-screen bg-gradient-to-br from-blue-50 to-green-100 p-6">
+<body>
 
-    <div class="max-w-7xl mx-auto">
+<!-- NAVBAR -->
+<nav>
+  <div class="logo">
+    <div class="logo-icon">💊</div>
+    Farma<em>Care</em>
+  </div>
+  <div class="nav-tabs">
+    <button class="nav-tab active" onclick="showSection('home')">
+      <div class="nav-dot"></div>
+      <span>Beranda</span>
+    </button>
+    <button class="nav-tab" onclick="showSection('medicines')">
+      <div class="nav-dot"></div>
+      <span>Obat</span>
+    </button>
+    <button class="nav-tab" onclick="showSection('reminders')">
+      <div class="nav-dot"></div>
+      <span>Pengingat</span>
+    </button>
+    <button class="nav-tab" onclick="showSection('history')">
+      <div class="nav-dot"></div>
+      <span>Riwayat</span>
+    </button>
+  </div>
+</nav>
 
-        <div class="bg-white rounded-3xl shadow-xl p-8 mb-8">
-            <h1 class="text-5xl font-bold text-blue-700">FarmaCare+</h1>
-            <p class="text-gray-600 text-lg mt-3">
-                Sistem pemeriksa obat, herbal, pengingat, dan analisis risiko penggunaan obat.
-            </p>
-
-            <div class="grid md:grid-cols-5 gap-4 mt-8">
-                <div class="bg-blue-100 p-5 rounded-2xl">
-                    <h2 class="font-bold text-blue-800">Pemeriksa Obat</h2>
-                </div>
-                <div class="bg-green-100 p-5 rounded-2xl">
-                    <h2 class="font-bold text-green-800">Herbal & Vitamin</h2>
-                </div>
-                <div class="bg-yellow-100 p-5 rounded-2xl">
-                    <h2 class="font-bold text-yellow-800">Penilaian Risiko</h2>
-                </div>
-                <div class="bg-red-100 p-5 rounded-2xl">
-                    <h2 class="font-bold text-red-800">Pengingat Obat</h2>
-                </div>
-                <div class="bg-purple-100 p-5 rounded-2xl">
-                    <h2 class="font-bold text-purple-800">Basis Data Obat</h2>
-                </div>
-            </div>
+<!-- HOME -->
+<div id="home" class="section active" style="max-width:100%; padding:0;">
+  <div class="hero">
+    <div class="hero-texture"></div>
+    <div class="hero-grain"></div>
+    <div class="hero-inner">
+      <div class="hero-badge"><span></span>Kesehatan Digital</div>
+      <h1>Minum Obat Tepat Waktu,<br><em>Setiap Hari</em></h1>
+      <p>pharmacare membantu kamu pantau jadwal obat, cari informasi, dan catat riwayat konsumsi dengan mudah dan elegan.</p>
+      <button class="hero-cta" onclick="showSection('medicines')">
+        Mulai Sekarang
+        <span class="hero-cta-arrow">→</span>
+      </button>
+      <div class="hero-stats">
+        <div class="stat">
+          <div class="stat-num" id="stat-meds">0</div>
+          <div class="stat-label">Obat Terdaftar</div>
         </div>
-
-        <div class="bg-white rounded-3xl shadow-xl p-8 mb-8">
-            <div class="grid md:grid-cols-2 gap-4">
-                <input
-                    type="text"
-                    id="searchInput"
-                    placeholder="Cari obat..."
-                    class="border border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-
-                <select
-                    id="categorySelect"
-                    class="border border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                >
-                    <option value="Semua">Semua</option>
-                    <option value="Analgesik">Analgesik</option>
-                    <option value="Antibiotik">Antibiotik</option>
-                    <option value="Vitamin">Vitamin</option>
-                    <option value="Herbal">Herbal</option>
-                    <option value="Antihistamin">Antihistamin</option>
-                    <option value="Obat Lambung">Obat Lambung</option>
-                </select>
-            </div>
+        <div class="stat">
+          <div class="stat-num" id="stat-taken">0</div>
+          <div class="stat-label">Sudah Diminum</div>
         </div>
-
-        <div id="medicineGrid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            </div>
-
-        <div class="mt-10 bg-blue-700 text-white rounded-3xl p-8">
-            <h2 class="text-3xl font-bold mb-3">Tentang FarmaCare+</h2>
-            <p class="text-blue-100 text-lg leading-relaxed">
-                FarmaCare+ merupakan aplikasi database obat modern yang membantu pengguna memeriksa obat, herbal, efek samping, kategori usia, risiko penggunaan, dan pengingat konsumsi obat secara aman.
-            </p>
+        <div class="stat">
+          <div class="stat-num" id="stat-history">0</div>
+          <div class="stat-label">Total Riwayat</div>
         </div>
-
+      </div>
     </div>
+  </div>
 
-    <script>
-        // Data Array Obat dari komponen React asli
-        const medicines = [
-            {
-                name: "Paracetamol",
-                category: "Analgesik",
-                type: "Obat Bebas",
-                herbal: false,
-                age: "Anak 6+ & Dewasa",
-                function: "Meredakan demam dan nyeri",
-                dosage: "3x sehari setelah makan",
-                reminder: "08:00, 14:00, 20:00",
-                stock: "Tersedia",
-                sideEffect: "Mual ringan",
-                risk: "Rendah",
-                warning: "Hindari overdosis",
-            },
-            {
-                name: "Amoxicillin",
-                category: "Antibiotik",
-                type: "Obat Resep",
-                herbal: false,
-                age: "Dewasa",
-                function: "Mengatasi infeksi bakteri",
-                dosage: "3x sehari",
-                reminder: "06:00, 14:00, 22:00",
-                stock: "Tersedia",
-                sideEffect: "Diare",
-                risk: "Sedang",
-                warning: "Harus sesuai resep dokter",
-            },
-            {
-                name: "Vitamin C",
-                category: "Vitamin",
-                type: "Suplemen",
-                herbal: false,
-                age: "Semua Usia",
-                function: "Meningkatkan daya tahan tubuh",
-                dosage: "1x sehari",
-                reminder: "07:00",
-                stock: "Hampir Habis",
-                sideEffect: "Jarang terjadi",
-                risk: "Rendah",
-                warning: "Jangan dikonsumsi berlebihan",
-            },
-            {
-                name: "Ibuprofen",
-                category: "Anti Inflamasi",
-                type: "Obat Bebas Terbatas",
-                herbal: false,
-                age: "12+",
-                function: "Mengurangi nyeri dan peradangan",
-                dosage: "2x sehari",
-                reminder: "09:00, 21:00",
-                stock: "Tersedia",
-                sideEffect: "Sakit lambung",
-                risk: "Sedang",
-                warning: "Tidak dianjurkan untuk maag berat",
-            },
-            {
-                name: "Cetirizine",
-                category: "Antihistamin",
-                type: "Obat Bebas",
-                herbal: false,
-                age: "6+",
-                function: "Mengatasi alergi",
-                dosage: "1x malam",
-                reminder: "20:00",
-                stock: "Tersedia",
-                sideEffect: "Mengantuk",
-                risk: "Rendah",
-                warning: "Hindari mengemudi setelah minum",
-            },
-            {
-                name: "Omeprazole",
-                category: "Obat Lambung",
-                type: "Obat Resep",
-                herbal: false,
-                age: "18+",
-                function: "Mengurangi asam lambung",
-                dosage: "1x sebelum makan",
-                reminder: "06:30",
-                stock: "Habis",
-                sideEffect: "Pusing ringan",
-                risk: "Sedang",
-                warning: "Konsultasikan jika penggunaan lama",
-            },
-            {
-                name: "Tolak Angin",
-                category: "Herbal",
-                type: "Obat Herbal",
-                herbal: true,
-                age: "12+",
-                function: "Meredakan masuk angin",
-                dosage: "2x sehari",
-                reminder: "08:00 & 20:00",
-                stock: "Tersedia",
-                sideEffect: "Jarang terjadi",
-                risk: "Rendah",
-                warning: "Perhatikan kandungan gula",
-            },
-            {
-                name: "Jahe Merah",
-                category: "Herbal",
-                type: "Minuman Herbal",
-                herbal: true,
-                age: "Semua Usia",
-                function: "Menghangatkan tubuh",
-                dosage: "1x sehari",
-                reminder: "19:00",
-                stock: "Tersedia",
-                sideEffect: "Panas lambung",
-                risk: "Rendah",
-                warning: "Hindari konsumsi berlebihan",
-            },
-            {
-                name: "Curcuma Plus",
-                category: "Herbal",
-                type: "Vitamin Herbal",
-                herbal: true,
-                age: "Anak-anak",
-                function: "Meningkatkan nafsu makan",
-                dosage: "1x sehari",
-                reminder: "07:00",
-                stock: "Tersedia",
-                sideEffect: "Jarang terjadi",
-                risk: "Rendah",
-                warning: "Gunakan sesuai dosis",
-            },
-        ];
+  <div class="features">
+    <div class="feature-card">
+      <div class="feature-icon">🔍</div>
+      <h3>Cari Informasi Obat</h3>
+      <p>Temukan fungsi, dosis, dan aturan pakai obat yang sudah terdaftar dengan cepat.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">⏰</div>
+      <h3>Pengingat Otomatis</h3>
+      <p>Atur jadwal minum obat dan dapatkan notifikasi tepat waktu setiap harinya.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">📊</div>
+      <h3>Riwayat Konsumsi</h3>
+      <p>Pantau kepatuhan dan lihat rekam jejak konsumsi obat harianmu secara rinci.</p>
+    </div>
+  </div>
+</div>
 
-        // Element Selector
-        const searchInput = document.getElementById("searchInput");
-        const categorySelect = document.getElementById("categorySelect");
-        const medicineGrid = document.getElementById("medicineGrid");
+<!-- MEDICINES -->
+<div id="medicines" class="section">
+  <div class="search-box">
+    <div class="section-header" style="padding-top:0; margin-bottom:1rem;">
+      <div class="section-title">Cari Obat</div>
+    </div>
+    <div class="search-label">Nama obat</div>
+    <div class="search-row">
+      <input type="text" id="search-input" class="search-input"
+        placeholder="cth: Paracetamol, Amoxicillin…"
+        onkeydown="if(event.key==='Enter') searchMedicine()" />
+      <button class="btn btn-primary" onclick="searchMedicine()">Cari</button>
+    </div>
+    <div id="search-result">
+      <h4 id="res-name">–</h4>
+      <div class="result-grid">
+        <div class="result-item">
+          <div class="label">Fungsi</div>
+          <div class="value" id="res-func">–</div>
+        </div>
+        <div class="result-item">
+          <div class="label">Dosis</div>
+          <div class="value" id="res-dose">–</div>
+        </div>
+        <div class="result-item">
+          <div class="label">Jadwal</div>
+          <div class="value" id="res-rem">–</div>
+        </div>
+      </div>
+    </div>
+    <div id="no-result">Obat tidak ditemukan dalam daftar kamu.</div>
+  </div>
 
-        // Fungsi Render Kartu Obat ke Layar
-        function renderMedicines() {
-            const searchValue = searchInput.value.toLowerCase();
-            const selectedCategory = categorySelect.value;
+  <div class="section-header">
+    <div class="section-title">Daftar Obat</div>
+    <div class="section-subtitle" id="med-count"></div>
+  </div>
+  <div class="medicine-grid" id="medicine-list"></div>
+  <div id="empty-meds" class="empty-state" style="display:none;">
+    <div class="emoji">💊</div>
+    <p>Belum ada obat terdaftar.<br>Tambahkan melalui menu <strong>Pengingat</strong>.</p>
+  </div>
+</div>
 
-            // Filter data yang cocok
-            const filtered = medicines.filter((medicine) => {
-                const matchSearch = medicine.name.toLowerCase().includes(searchValue);
-                const matchCategory = selectedCategory === "Semua" || medicine.category === selectedCategory;
-                return matchSearch && matchCategory;
-            });
+<!-- REMINDERS -->
+<div id="reminders" class="section">
+  <div class="add-form">
+    <div class="form-title">
+      <div class="form-title-icon">➕</div>
+      Tambah Obat Baru
+    </div>
+    <div class="form-grid">
+      <div class="form-group">
+        <label>Nama Obat *</label>
+        <input type="text" id="f-name" placeholder="cth: Paracetamol" />
+      </div>
+      <div class="form-group">
+        <label>Dosis</label>
+        <input type="text" id="f-dose" placeholder="cth: 3x sehari" />
+      </div>
+      <div class="form-group full">
+        <label>Fungsi / Kegunaan</label>
+        <textarea id="f-func" placeholder="cth: Meredakan demam dan nyeri…"></textarea>
+      </div>
+      <div class="form-group full">
+        <label>Jadwal Minum</label>
+        <div class="time-row">
+          <input type="time" id="f-time" style="max-width:160px;" />
+          <button class="btn btn-outline btn-sm" onclick="addTimeTag()">+ Tambah Jam</button>
+        </div>
+        <div class="time-inputs" id="time-tags"></div>
+      </div>
+    </div>
+    <button class="btn btn-primary" onclick="addMedicine()" style="width:100%; padding:1rem; font-size:.95rem;">
+      Simpan Obat
+    </button>
+  </div>
 
-            // Reset tampilan grid sebelum diisi ulang
-            medicineGrid.innerHTML = "";
+  <div class="section-header">
+    <div class="section-title">Semua Jadwal</div>
+    <div class="section-subtitle" id="rem-count"></div>
+  </div>
+  <div class="medicine-grid" id="reminder-list"></div>
+  <div id="empty-reminders" class="empty-state" style="display:none;">
+    <div class="emoji">⏰</div>
+    <p>Belum ada jadwal.<br>Tambahkan obat melalui form di atas.</p>
+  </div>
+</div>
 
-            // Jika hasil filter kosong
-            if (filtered.length === 0) {
-                medicineGrid.innerHTML = `<p class="text-gray-500 col-span-full text-center py-10">Obat tidak ditemukan.</p>`;
-                return;
-            }
+<!-- HISTORY -->
+<div id="history" class="section">
+  <div class="section-header">
+    <div class="section-title">Riwayat Konsumsi</div>
+    <div style="margin-left:auto;">
+      <button class="btn btn-danger btn-sm" onclick="clearHistory()">Hapus Semua</button>
+    </div>
+  </div>
+  <div id="history-list"></div>
+  <div id="empty-history" class="empty-state" style="display:none;">
+    <div class="emoji">📋</div>
+    <p>Belum ada riwayat.<br>Tandai obat sudah diminum terlebih dahulu.</p>
+  </div>
+</div>
 
-            // Membangun element HTML untuk setiap kartu obat
-            filtered.forEach((medicine) => {
-                const badgeColor = medicine.risk === "Rendah" ? "bg-green-100 text-green-700" : "bg-yellow-100 text-yellow-700";
-                
-                const cardHtml = `
-                    <div class="bg-white rounded-3xl shadow-lg p-6 hover:shadow-2xl transition">
-                        <div class="flex justify-between items-center mb-4">
-                            <h2 class="text-2xl font-bold text-blue-700">${medicine.name}</h2>
-                            <span class="px-3 py-1 rounded-full text-sm font-semibold ${badgeColor}">
-                                Risiko ${medicine.risk}
-                            </span>
-                        </div>
+<div class="toast" id="toast"></div>
 
-                        <div class="space-y-2 text-gray-700">
-                            <p><b>Kategori:</b> ${medicine.category}</p>
-                            <p><b>Jenis:</b> ${medicine.type}</p>
-                            <p><b>Usia:</b> ${medicine.age}</p>
-                            <p><b>Fungsi:</b> ${medicine.function}</p>
-                            <p><b>Dosis:</b> ${medicine.dosage}</p>
-                            <p><b>Pengingat:</b> ${medicine.reminder}</p>
-                            <p><b>Efek Samping:</b> ${medicine.sideEffect}</p>
-                            <p><b>Peringatan:</b> ${medicine.warning}</p>
-                            <p><b>Stok:</b> ${medicine.stock}</p>
-                            <p><b>Herbal:</b> ${medicine.herbal ? "Ya" : "Tidak"}</p>
-                        </div>
+<script>
+  let medicines = JSON.parse(localStorage.getItem('pharmacare_meds') || '[]');
+  let history = JSON.parse(localStorage.getItem('pharmacare_history') || '[]');
+  let timeTags = [];
 
-                        <div class="mt-6 flex gap-3">
-                            <button class="flex-1 bg-green-600 hover:bg-green-700 text-white py-3 rounded-xl transition">
-                                Sudah Diminum
-                            </button>
-                            <button class="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl transition">
-                                Detail
-                            </button>
-                        </div>
-                    </div>
-                `;
-                medicineGrid.innerHTML += cardHtml;
-            });
+  if (medicines.length === 0) {
+    medicines = [
+      { id: 1, name: "Paracetamol", func: "Meredakan demam dan nyeri ringan hingga sedang", dose: "3x sehari setelah makan", times: ["08:00","14:00","20:00"], taken: false },
+      { id: 2, name: "Amoxicillin", func: "Antibiotik untuk infeksi bakteri", dose: "3x sehari setiap 8 jam", times: ["06:00","14:00","22:00"], taken: false },
+      { id: 3, name: "Vitamin C", func: "Meningkatkan daya tahan tubuh", dose: "1x sehari", times: ["07:00"], taken: false },
+    ];
+    saveMeds();
+  }
+
+  function saveMeds() { localStorage.setItem('pharmacare_meds', JSON.stringify(medicines)); }
+  function saveHistory() { localStorage.setItem('pharmacare_history', JSON.stringify(history)); }
+
+  function showSection(id) {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    document.querySelectorAll('.nav-tab').forEach((t, i) => {
+      const ids = ['home', 'medicines', 'reminders', 'history'];
+      t.classList.toggle('active', ids[i] === id);
+    });
+    if (id === 'medicines') renderMedicines();
+    if (id === 'reminders') renderReminders();
+    if (id === 'history') renderHistory();
+    if (id === 'home') updateStats();
+    window.scrollTo(0, 0);
+  }
+
+  function updateStats() {
+    document.getElementById('stat-meds').textContent = medicines.length;
+    document.getElementById('stat-taken').textContent = medicines.filter(m => m.taken).length;
+    document.getElementById('stat-history').textContent = history.length;
+  }
+
+  function searchMedicine() {
+    const q = document.getElementById('search-input').value.trim().toLowerCase();
+    const found = medicines.find(m => m.name.toLowerCase().includes(q));
+    const resEl = document.getElementById('search-result');
+    const noEl = document.getElementById('no-result');
+    if (!q) { resEl.style.display = 'none'; noEl.style.display = 'none'; return; }
+    if (found) {
+      document.getElementById('res-name').textContent = found.name;
+      document.getElementById('res-func').textContent = found.func || '–';
+      document.getElementById('res-dose').textContent = found.dose || '–';
+      document.getElementById('res-rem').textContent = (found.times || []).join(', ') || '–';
+      resEl.style.display = 'block';
+      noEl.style.display = 'none';
+    } else {
+      resEl.style.display = 'none';
+      noEl.style.display = 'block';
+    }
+  }
+
+  function makeCard(m, withDelete = false) {
+    return `
+    <div class="medicine-card ${m.taken ? 'taken' : ''}" id="card-${m.id}">
+      <div class="card-top">
+        <div class="med-name">${m.name}</div>
+        <span class="status-badge ${m.taken ? 'badge-taken' : 'badge-active'}">${m.taken ? '✓ Diminum' : 'Aktif'}</span>
+      </div>
+      <div class="med-info"><strong>Fungsi:</strong> ${m.func || '–'}</div>
+      <div class="med-info"><strong>Dosis:</strong> ${m.dose || '–'}</div>
+      <div class="med-reminder">🕐 ${(m.times || []).join(' · ') || '–'}</div>
+      <div class="card-actions">
+        <button class="btn btn-primary btn-sm" style="flex:1;" onclick="markTaken(${m.id})" ${m.taken ? 'disabled style="opacity:.45;cursor:not-allowed;"' : ''}>
+          ${m.taken ? '✓ Sudah Diminum' : 'Tandai Diminum'}
+        </button>
+        ${withDelete ? `<button class="btn btn-danger btn-sm" onclick="deleteMedicine(${m.id})">🗑</button>` : ''}
+      </div>
+    </div>`;
+  }
+
+  function renderMedicines() {
+    const el = document.getElementById('medicine-list');
+    const countEl = document.getElementById('med-count');
+    if (medicines.length === 0) {
+      el.innerHTML = '';
+      document.getElementById('empty-meds').style.display = 'block';
+      countEl.textContent = '';
+    } else {
+      document.getElementById('empty-meds').style.display = 'none';
+      el.innerHTML = medicines.map(m => makeCard(m, false)).join('');
+      countEl.textContent = `${medicines.length} obat`;
+    }
+  }
+
+  function renderReminders() {
+    const el = document.getElementById('reminder-list');
+    const countEl = document.getElementById('rem-count');
+    if (medicines.length === 0) {
+      el.innerHTML = '';
+      document.getElementById('empty-reminders').style.display = 'block';
+      countEl.textContent = '';
+    } else {
+      document.getElementById('empty-reminders').style.display = 'none';
+      el.innerHTML = medicines.map(m => makeCard(m, true)).join('');
+      countEl.textContent = `${medicines.length} jadwal`;
+    }
+  }
+
+  function markTaken(id) {
+    const med = medicines.find(m => m.id === id);
+    if (!med || med.taken) return;
+    med.taken = true;
+    saveMeds();
+    const now = new Date();
+    history.unshift({
+      id: Date.now(),
+      medId: id,
+      name: med.name,
+      time: now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }),
+      date: now.toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })
+    });
+    saveHistory();
+    showToast(`✓ ${med.name} ditandai sudah diminum`);
+    renderMedicines();
+    renderReminders();
+    updateStats();
+  }
+
+  function addTimeTag() {
+    const t = document.getElementById('f-time').value;
+    if (!t || timeTags.includes(t)) return;
+    timeTags.push(t);
+    renderTimeTags();
+    document.getElementById('f-time').value = '';
+  }
+
+  function removeTimeTag(t) {
+    timeTags = timeTags.filter(x => x !== t);
+    renderTimeTags();
+  }
+
+  function renderTimeTags() {
+    document.getElementById('time-tags').innerHTML = timeTags.map(t =>
+      `<div class="time-tag">${t} <button onclick="removeTimeTag('${t}')">×</button></div>`
+    ).join('');
+  }
+
+  function addMedicine() {
+    const name = document.getElementById('f-name').value.trim();
+    if (!name) { showToast('⚠ Nama obat wajib diisi'); return; }
+    const med = {
+      id: Date.now(),
+      name,
+      func: document.getElementById('f-func').value.trim() || '–',
+      dose: document.getElementById('f-dose').value.trim() || '–',
+      times: [...timeTags],
+      taken: false
+    };
+    medicines.push(med);
+    saveMeds();
+    document.getElementById('f-name').value = '';
+    document.getElementById('f-func').value = '';
+    document.getElementById('f-dose').value = '';
+    timeTags = [];
+    renderTimeTags();
+    renderReminders();
+    showToast(`💊 ${name} berhasil ditambahkan`);
+    updateStats();
+  }
+
+  function deleteMedicine(id) {
+    if (!confirm('Hapus obat ini?')) return;
+    medicines = medicines.filter(m => m.id !== id);
+    saveMeds();
+    renderReminders();
+    updateStats();
+    showToast('Obat dihapus');
+  }
+
+  function renderHistory() {
+    const el = document.getElementById('history-list');
+    if (history.length === 0) {
+      el.innerHTML = '';
+      document.getElementById('empty-history').style.display = 'block';
+      return;
+    }
+    document.getElementById('empty-history').style.display = 'none';
+    const grouped = {};
+    history.forEach(h => { if (!grouped[h.date]) grouped[h.date] = []; grouped[h.date].push(h); });
+    el.innerHTML = Object.entries(grouped).map(([date, items]) =>
+      `<div class="history-date">${date}</div>` +
+      items.map(h => `
+        <div class="history-item">
+          <span class="med-col"><div class="med-dot"></div>${h.name}</span>
+          <span class="time-col">${h.time}</span>
+          <span class="check">✓</span>
+        </div>`
+      ).join('')
+    ).join('');
+  }
+
+  function clearHistory() {
+    if (!confirm('Hapus semua riwayat?')) return;
+    history = [];
+    saveHistory();
+    renderHistory();
+    showToast('Riwayat dihapus');
+  }
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.style.display = 'block';
+    setTimeout(() => { t.style.display = 'none'; }, 3000);
+  }
+
+  // Reset harian
+  const today = new Date().toDateString();
+  if (localStorage.getItem('pharmacare_reset') !== today) {
+    medicines.forEach(m => m.taken = false);
+    saveMeds();
+    localStorage.setItem('pharmacare_reset', today);
+  }
+
+  // Init
+  updateStats();
+  renderMedicines();
+
+  // Notifikasi browser
+  if ('Notification' in window && Notification.permission !== 'denied') {
+    Notification.requestPermission();
+  }
+  setInterval(() => {
+    const now = new Date();
+    const hhmm = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+    medicines.forEach(m => {
+      if (!m.taken && m.times && m.times.includes(hhmm)) {
+        if (Notification.permission === 'granted') {
+          new Notification('pharmacare', { body: `Waktunya minum ${m.name}` });
         }
-
-        searchInput.addEventListener("input", renderMedicines);
-        categorySelect.addEventListener("change", renderMedicines);
-
-        renderMedicines();
-    </script>
+      }
+    });
+  }, 60000);
+</script>
 </body>
 </html>
-
-```
