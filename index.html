@@ -1,755 +1,279 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>FarmaCare – Pengingat & Pemeriksa Obat</title>
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --mint: #00C896;
-      --mint-light: #E6FAF4;
-      --mint-dark: #009E76;
-      --navy: #0B1F3A;
-      --navy-mid: #1A3558;
-      --sky: #4FC3F7;
-      --amber: #FFB84D;
-      --rose: #FF6B7A;
-      --text: #1C2B3A;
-      --muted: #6B7C93;
-      --surface: #F7FBFD;
-      --card: #FFFFFF;
-      --border: #E2ECF3;
-    }
-
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    body {
-      font-family: 'DM Sans', sans-serif;
-      background: var(--surface);
-      color: var(--text);
-      min-height: 100vh;
-    }
-
-    /* ─── NAVBAR ─── */
-    nav {
-      background: var(--navy);
-      padding: 0 2rem;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      height: 64px;
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      box-shadow: 0 2px 20px rgba(11,31,58,.35);
-    }
-    .logo {
-      font-family: 'Syne', sans-serif;
-      font-weight: 800;
-      font-size: 1.5rem;
-      color: var(--mint);
-      letter-spacing: -.5px;
-      display: flex;
-      align-items: center;
-      gap: .5rem;
-    }
-    .logo span { color: #fff; font-weight: 400; }
-    .nav-tabs { display: flex; gap: .5rem; }
-    .nav-tab {
-      font-family: 'DM Sans', sans-serif;
-      font-size: .85rem;
-      font-weight: 500;
-      color: rgba(255,255,255,.55);
-      background: none;
-      border: none;
-      cursor: pointer;
-      padding: .5rem 1rem;
-      border-radius: 8px;
-      transition: all .2s;
-    }
-    .nav-tab:hover { color: #fff; background: rgba(255,255,255,.08); }
-    .nav-tab.active { color: var(--mint); background: rgba(0,200,150,.12); }
-
-    /* ─── HERO ─── */
-    .hero {
-      background: linear-gradient(135deg, var(--navy) 0%, var(--navy-mid) 60%, #1B4A6E 100%);
-      padding: 5rem 2rem 4rem;
-      text-align: center;
-      position: relative;
-      overflow: hidden;
-    }
-    .hero::before {
-      content: '';
-      position: absolute;
-      width: 600px; height: 600px;
-      background: radial-gradient(circle, rgba(0,200,150,.15) 0%, transparent 70%);
-      top: -200px; right: -100px;
-      pointer-events: none;
-    }
-    .hero::after {
-      content: '';
-      position: absolute;
-      width: 400px; height: 400px;
-      background: radial-gradient(circle, rgba(79,195,247,.1) 0%, transparent 70%);
-      bottom: -100px; left: -50px;
-      pointer-events: none;
-    }
-    .hero-badge {
-      display: inline-block;
-      background: rgba(0,200,150,.15);
-      border: 1px solid rgba(0,200,150,.35);
-      color: var(--mint);
-      font-size: .78rem;
-      font-weight: 600;
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
-      padding: .35rem 1rem;
-      border-radius: 100px;
-      margin-bottom: 1.5rem;
-    }
-    .hero h1 {
-      font-family: 'Syne', sans-serif;
-      font-size: clamp(2.5rem, 6vw, 4rem);
-      font-weight: 800;
-      color: #fff;
-      line-height: 1.1;
-      margin-bottom: 1rem;
-    }
-    .hero h1 em { color: var(--mint); font-style: normal; }
-    .hero p {
-      color: rgba(255,255,255,.6);
-      font-size: 1.1rem;
-      max-width: 520px;
-      margin: 0 auto 2.5rem;
-      line-height: 1.6;
-    }
-    .hero-stats {
-      display: flex;
-      justify-content: center;
-      gap: 3rem;
-      margin-top: 2rem;
-    }
-    .stat { text-align: center; }
-    .stat-num {
-      font-family: 'Syne', sans-serif;
-      font-size: 1.8rem;
-      font-weight: 800;
-      color: var(--mint);
-    }
-    .stat-label { font-size: .8rem; color: rgba(255,255,255,.45); margin-top: .2rem; }
-
-    /* ─── FEATURES ─── */
-    .features {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 1.5rem;
-      max-width: 900px;
-      margin: -2.5rem auto 3rem;
-      padding: 0 1.5rem;
-      position: relative;
-      z-index: 10;
-    }
-    .feature-card {
-      background: var(--card);
-      border-radius: 20px;
-      padding: 1.75rem;
-      box-shadow: 0 8px 32px rgba(11,31,58,.1);
-      border: 1px solid var(--border);
-      transition: transform .2s, box-shadow .2s;
-    }
-    .feature-card:hover { transform: translateY(-4px); box-shadow: 0 16px 40px rgba(11,31,58,.15); }
-    .feature-icon {
-      width: 48px; height: 48px;
-      border-radius: 14px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 1.5rem;
-      margin-bottom: 1rem;
-    }
-    .feature-card:nth-child(1) .feature-icon { background: rgba(79,195,247,.12); }
-    .feature-card:nth-child(2) .feature-icon { background: rgba(0,200,150,.12); }
-    .feature-card:nth-child(3) .feature-icon { background: rgba(255,184,77,.12); }
-    .feature-card h3 { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1rem; margin-bottom: .4rem; }
-    .feature-card p { font-size: .85rem; color: var(--muted); line-height: 1.5; }
-
-    /* ─── SECTIONS ─── */
-    .section { display: none; max-width: 900px; margin: 0 auto; padding: 0 1.5rem 4rem; }
-    .section.active { display: block; }
-
-    .section-title {
-      font-family: 'Syne', sans-serif;
-      font-size: 1.6rem;
-      font-weight: 800;
-      color: var(--navy);
-      margin-bottom: 1.5rem;
-    }
-
-    /* ─── SEARCH ─── */
-    .search-box {
-      background: var(--card);
-      border-radius: 20px;
-      padding: 2rem;
-      box-shadow: 0 4px 24px rgba(11,31,58,.08);
-      border: 1px solid var(--border);
-      margin-bottom: 2rem;
-    }
-    .search-row { display: flex; gap: .75rem; }
-    .search-input {
-      flex: 1;
-      border: 2px solid var(--border);
-      border-radius: 12px;
-      padding: .85rem 1.2rem;
-      font-family: 'DM Sans', sans-serif;
-      font-size: .95rem;
-      color: var(--text);
-      background: var(--surface);
-      transition: border-color .2s;
-      outline: none;
-    }
-    .search-input:focus { border-color: var(--mint); }
-    .btn {
-      font-family: 'Syne', sans-serif;
-      font-weight: 700;
-      font-size: .9rem;
-      border: none;
-      cursor: pointer;
-      border-radius: 12px;
-      padding: .85rem 1.75rem;
-      transition: all .2s;
-    }
-    .btn-primary { background: var(--mint); color: #fff; }
-    .btn-primary:hover { background: var(--mint-dark); transform: translateY(-1px); box-shadow: 0 6px 20px rgba(0,200,150,.35); }
-    .btn-secondary { background: var(--navy); color: #fff; }
-    .btn-secondary:hover { background: var(--navy-mid); }
-    .btn-sm { padding: .55rem 1.1rem; font-size: .82rem; }
-    .btn-danger { background: rgba(255,107,122,.12); color: var(--rose); }
-    .btn-danger:hover { background: var(--rose); color: #fff; }
-
-    /* Search result */
-    #search-result {
-      background: var(--mint-light);
-      border: 1px solid rgba(0,200,150,.3);
-      border-radius: 16px;
-      padding: 1.5rem;
-      margin-top: 1.25rem;
-      display: none;
-      animation: fadeIn .3s ease;
-    }
-    #search-result h4 { font-family: 'Syne', sans-serif; font-weight: 700; color: var(--navy); margin-bottom: .75rem; }
-    #search-result .result-row { display: flex; gap: 1rem; margin-bottom: .5rem; font-size: .9rem; }
-    #search-result .label { font-weight: 600; color: var(--mint-dark); min-width: 80px; }
-    #no-result {
-      background: rgba(255,107,122,.08);
-      border: 1px solid rgba(255,107,122,.25);
-      border-radius: 16px;
-      padding: 1.25rem 1.5rem;
-      margin-top: 1.25rem;
-      display: none;
-      color: var(--rose);
-      font-size: .9rem;
-    }
-
-    /* ─── MEDICINE CARDS ─── */
-    .medicine-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.25rem; }
-    .medicine-card {
-      background: var(--card);
-      border-radius: 20px;
-      padding: 1.5rem;
-      box-shadow: 0 4px 20px rgba(11,31,58,.08);
-      border: 1px solid var(--border);
-      transition: all .2s;
-      position: relative;
-      overflow: hidden;
-    }
-    .medicine-card::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; right: 0;
-      height: 4px;
-      background: linear-gradient(90deg, var(--mint), var(--sky));
-    }
-    .medicine-card:hover { transform: translateY(-3px); box-shadow: 0 12px 32px rgba(11,31,58,.12); }
-    .medicine-card.taken::before { background: var(--muted); opacity: .4; }
-    .medicine-card.taken { opacity: .7; }
-    .card-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem; }
-    .med-name { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.1rem; color: var(--navy); }
-    .status-badge {
-      font-size: .72rem; font-weight: 600;
-      padding: .3rem .7rem;
-      border-radius: 100px;
-    }
-    .badge-active { background: rgba(0,200,150,.12); color: var(--mint-dark); }
-    .badge-taken { background: rgba(107,124,147,.12); color: var(--muted); }
-    .med-info { font-size: .85rem; color: var(--muted); margin-bottom: .4rem; line-height: 1.4; }
-    .med-info strong { color: var(--text); }
-    .med-reminder {
-      display: flex; align-items: center; gap: .5rem;
-      background: var(--surface);
-      border-radius: 10px;
-      padding: .6rem .85rem;
-      margin: 1rem 0;
-      font-size: .82rem;
-      font-weight: 500;
-      color: var(--navy-mid);
-    }
-    .card-actions { display: flex; gap: .6rem; margin-top: .75rem; }
-
-    /* ─── ADD MEDICINE FORM ─── */
-    .add-form {
-      background: var(--card);
-      border-radius: 20px;
-      padding: 2rem;
-      box-shadow: 0 4px 24px rgba(11,31,58,.08);
-      border: 1px solid var(--border);
-      margin-bottom: 2.5rem;
-    }
-    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
-    .form-group { display: flex; flex-direction: column; gap: .4rem; }
-    .form-group.full { grid-column: 1 / -1; }
-    label { font-size: .82rem; font-weight: 600; color: var(--navy); }
-    input[type=text], input[type=time], textarea, select {
-      border: 2px solid var(--border);
-      border-radius: 10px;
-      padding: .75rem 1rem;
-      font-family: 'DM Sans', sans-serif;
-      font-size: .9rem;
-      color: var(--text);
-      background: var(--surface);
-      outline: none;
-      transition: border-color .2s;
-      width: 100%;
-    }
-    input:focus, textarea:focus, select:focus { border-color: var(--mint); }
-    textarea { resize: vertical; min-height: 70px; }
-    .time-inputs { display: flex; flex-wrap: wrap; gap: .5rem; }
-    .time-tag {
-      display: flex; align-items: center; gap: .4rem;
-      background: var(--mint-light);
-      border: 1px solid rgba(0,200,150,.3);
-      color: var(--mint-dark);
-      padding: .35rem .75rem;
-      border-radius: 100px;
-      font-size: .82rem; font-weight: 500;
-    }
-    .time-tag button { background: none; border: none; cursor: pointer; font-size: .9rem; line-height: 1; color: var(--mint-dark); }
-
-    /* ─── HISTORY ─── */
-    .history-date {
-      font-family: 'Syne', sans-serif;
-      font-size: .8rem;
-      font-weight: 700;
-      color: var(--muted);
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      margin: 1.5rem 0 .75rem;
-    }
-    .history-item {
-      display: flex; align-items: center; justify-content: space-between;
-      background: var(--card);
-      border-radius: 14px;
-      padding: 1rem 1.25rem;
-      margin-bottom: .6rem;
-      border: 1px solid var(--border);
-      font-size: .9rem;
-    }
-    .history-item .med-col { font-weight: 600; color: var(--navy); }
-    .history-item .time-col { color: var(--muted); font-size: .82rem; }
-    .history-item .check { color: var(--mint); font-size: 1.1rem; }
-    .empty-state {
-      text-align: center; padding: 3rem;
-      color: var(--muted); font-size: .9rem;
-    }
-    .empty-state .emoji { font-size: 2.5rem; margin-bottom: .75rem; }
-
-    /* ─── ANIMATIONS ─── */
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
-    .medicine-card { animation: fadeIn .3s ease both; }
-
-    /* ─── TOAST ─── */
-    .toast {
-      position: fixed;
-      bottom: 2rem; right: 2rem;
-      background: var(--navy);
-      color: #fff;
-      padding: .85rem 1.5rem;
-      border-radius: 14px;
-      font-size: .9rem;
-      font-weight: 500;
-      box-shadow: 0 8px 30px rgba(11,31,58,.3);
-      display: none;
-      z-index: 999;
-      animation: slideUp .3s ease;
-      border-left: 4px solid var(--mint);
-    }
-    @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-
-    /* ─── RESPONSIVE ─── */
-    @media (max-width: 640px) {
-      nav { padding: 0 1rem; }
-      .nav-tabs .nav-tab span { display: none; }
-      .hero { padding: 3rem 1rem 2rem; }
-      .hero-stats { gap: 1.5rem; }
-      .features { grid-template-columns: 1fr; margin-top: -1rem; }
-      .form-grid { grid-template-columns: 1fr; }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FarmaCare+</title>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
+<body class="min-h-screen bg-gradient-to-br from-blue-50 to-green-100 p-6">
 
-<!-- NAVBAR -->
-<nav>
-  <div class="logo">💊 Farma<span>Care</span></div>
-  <div class="nav-tabs">
-    <button class="nav-tab active" onclick="showSection('home')">🏠 <span>Beranda</span></button>
-    <button class="nav-tab" onclick="showSection('medicines')">💊 <span>Obat</span></button>
-    <button class="nav-tab" onclick="showSection('reminders')">⏰ <span>Pengingat</span></button>
-    <button class="nav-tab" onclick="showSection('history')">📋 <span>Riwayat</span></button>
-  </div>
-</nav>
+    <div class="max-w-7xl mx-auto">
 
-<!-- HERO -->
-<div id="home" class="section active" style="max-width:100%; padding:0;">
-  <div class="hero">
-    <div class="hero-badge">🌿 Kesehatan Digital</div>
-    <h1>Minum Obat Tepat Waktu,<br><em>Setiap Hari</em></h1>
-    <p>FarmaCare membantu kamu pantau jadwal obat, cari informasi obat, dan catat riwayat konsumsi dengan mudah.</p>
-    <button class="btn btn-primary" onclick="showSection('medicines')" style="font-size:1rem; padding:1rem 2.5rem; border-radius:14px;">
-      Mulai Sekarang →
-    </button>
-    <div class="hero-stats">
-      <div class="stat"><div class="stat-num" id="stat-meds">0</div><div class="stat-label">Obat Terdaftar</div></div>
-      <div class="stat"><div class="stat-num" id="stat-taken">0</div><div class="stat-label">Sudah Diminum</div></div>
-      <div class="stat"><div class="stat-num" id="stat-history">0</div><div class="stat-label">Total Riwayat</div></div>
-    </div>
-  </div>
+        <div class="bg-white rounded-3xl shadow-xl p-8 mb-8">
+            <h1 class="text-5xl font-bold text-blue-700">FarmaCare+</h1>
+            <p class="text-gray-600 text-lg mt-3">
+                Sistem pemeriksa obat, herbal, pengingat, dan analisis risiko penggunaan obat.
+            </p>
 
-  <div class="features">
-    <div class="feature-card">
-      <div class="feature-icon">🔍</div>
-      <h3>Cari Informasi Obat</h3>
-      <p>Temukan fungsi, dosis, dan aturan pakai obat dengan cepat dan akurat.</p>
-    </div>
-    <div class="feature-card">
-      <div class="feature-icon">⏰</div>
-      <h3>Pengingat Otomatis</h3>
-      <p>Atur jadwal minum obat dan dapatkan notifikasi tepat waktu setiap hari.</p>
-    </div>
-    <div class="feature-card">
-      <div class="feature-icon">📊</div>
-      <h3>Riwayat Konsumsi</h3>
-      <p>Pantau kepatuhan minum obat dan lihat rekam jejak konsumsi harianmu.</p>
-    </div>
-  </div>
-</div>
-
-<!-- MEDICINES SECTION -->
-<div id="medicines" class="section" style="padding-top: 2.5rem;">
-  <div class="search-box">
-    <div class="section-title" style="margin-bottom:1rem;">🔍 Cari Obat</div>
-    <div class="search-row">
-      <input type="text" id="search-input" class="search-input" placeholder="Cari nama obat (cth: Paracetamol, Amoxicillin…)" onkeydown="if(event.key==='Enter') searchMedicine()" />
-      <button class="btn btn-primary" onclick="searchMedicine()">Cari</button>
-    </div>
-    <div id="search-result">
-      <h4 id="res-name">–</h4>
-      <div class="result-row"><span class="label">Fungsi</span><span id="res-func">–</span></div>
-      <div class="result-row"><span class="label">Dosis</span><span id="res-dose">–</span></div>
-      <div class="result-row"><span class="label">Pengingat</span><span id="res-rem">–</span></div>
-    </div>
-    <div id="no-result">❌ Obat tidak ditemukan dalam daftar.</div>
-  </div>
-
-  <div class="section-title">💊 Daftar Obat Kamu</div>
-  <div class="medicine-grid" id="medicine-list"></div>
-  <div id="empty-meds" class="empty-state" style="display:none;">
-    <div class="emoji">💊</div>
-    <p>Belum ada obat. Tambahkan di menu <strong>Pengingat</strong>.</p>
-  </div>
-</div>
-
-<!-- REMINDERS SECTION -->
-<div id="reminders" class="section" style="padding-top: 2.5rem;">
-  <div class="add-form">
-    <div class="section-title" style="margin-bottom:1.5rem;">➕ Tambah Obat Baru</div>
-    <div class="form-grid">
-      <div class="form-group">
-        <label>Nama Obat *</label>
-        <input type="text" id="f-name" placeholder="cth: Paracetamol" />
-      </div>
-      <div class="form-group">
-        <label>Dosis</label>
-        <input type="text" id="f-dose" placeholder="cth: 3x sehari" />
-      </div>
-      <div class="form-group full">
-        <label>Fungsi / Kegunaan</label>
-        <textarea id="f-func" placeholder="cth: Meredakan demam dan nyeri…"></textarea>
-      </div>
-      <div class="form-group full">
-        <label>Jadwal Minum (tambahkan jam)</label>
-        <div style="display:flex; gap:.6rem; margin-bottom:.6rem;">
-          <input type="time" id="f-time" style="max-width:160px;" />
-          <button class="btn btn-secondary btn-sm" onclick="addTimeTag()">+ Tambah</button>
+            <div class="grid md:grid-cols-5 gap-4 mt-8">
+                <div class="bg-blue-100 p-5 rounded-2xl">
+                    <h2 class="font-bold text-blue-800">Pemeriksa Obat</h2>
+                </div>
+                <div class="bg-green-100 p-5 rounded-2xl">
+                    <h2 class="font-bold text-green-800">Herbal & Vitamin</h2>
+                </div>
+                <div class="bg-yellow-100 p-5 rounded-2xl">
+                    <h2 class="font-bold text-yellow-800">Penilaian Risiko</h2>
+                </div>
+                <div class="bg-red-100 p-5 rounded-2xl">
+                    <h2 class="font-bold text-red-800">Pengingat Obat</h2>
+                </div>
+                <div class="bg-purple-100 p-5 rounded-2xl">
+                    <h2 class="font-bold text-purple-800">Basis Data Obat</h2>
+                </div>
+            </div>
         </div>
-        <div class="time-inputs" id="time-tags"></div>
-      </div>
+
+        <div class="bg-white rounded-3xl shadow-xl p-8 mb-8">
+            <div class="grid md:grid-cols-2 gap-4">
+                <input
+                    type="text"
+                    id="searchInput"
+                    placeholder="Cari obat..."
+                    class="border border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+
+                <select
+                    id="categorySelect"
+                    class="border border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                    <option value="Semua">Semua</option>
+                    <option value="Analgesik">Analgesik</option>
+                    <option value="Antibiotik">Antibiotik</option>
+                    <option value="Vitamin">Vitamin</option>
+                    <option value="Herbal">Herbal</option>
+                    <option value="Antihistamin">Antihistamin</option>
+                    <option value="Obat Lambung">Obat Lambung</option>
+                </select>
+            </div>
+        </div>
+
+        <div id="medicineGrid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            </div>
+
+        <div class="mt-10 bg-blue-700 text-white rounded-3xl p-8">
+            <h2 class="text-3xl font-bold mb-3">Tentang FarmaCare+</h2>
+            <p class="text-blue-100 text-lg leading-relaxed">
+                FarmaCare+ merupakan aplikasi database obat modern yang membantu pengguna memeriksa obat, herbal, efek samping, kategori usia, risiko penggunaan, dan pengingat konsumsi obat secara aman.
+            </p>
+        </div>
+
     </div>
-    <button class="btn btn-primary" onclick="addMedicine()">Simpan Obat</button>
-  </div>
 
-  <div class="section-title">📋 Semua Jadwal Obat</div>
-  <div class="medicine-grid" id="reminder-list"></div>
-  <div id="empty-reminders" class="empty-state" style="display:none;">
-    <div class="emoji">⏰</div>
-    <p>Belum ada jadwal. Tambahkan obat di atas.</p>
-  </div>
-</div>
+    <script>
+        // Data Array Obat dari komponen React asli
+        const medicines = [
+            {
+                name: "Paracetamol",
+                category: "Analgesik",
+                type: "Obat Bebas",
+                herbal: false,
+                age: "Anak 6+ & Dewasa",
+                function: "Meredakan demam dan nyeri",
+                dosage: "3x sehari setelah makan",
+                reminder: "08:00, 14:00, 20:00",
+                stock: "Tersedia",
+                sideEffect: "Mual ringan",
+                risk: "Rendah",
+                warning: "Hindari overdosis",
+            },
+            {
+                name: "Amoxicillin",
+                category: "Antibiotik",
+                type: "Obat Resep",
+                herbal: false,
+                age: "Dewasa",
+                function: "Mengatasi infeksi bakteri",
+                dosage: "3x sehari",
+                reminder: "06:00, 14:00, 22:00",
+                stock: "Tersedia",
+                sideEffect: "Diare",
+                risk: "Sedang",
+                warning: "Harus sesuai resep dokter",
+            },
+            {
+                name: "Vitamin C",
+                category: "Vitamin",
+                type: "Suplemen",
+                herbal: false,
+                age: "Semua Usia",
+                function: "Meningkatkan daya tahan tubuh",
+                dosage: "1x sehari",
+                reminder: "07:00",
+                stock: "Hampir Habis",
+                sideEffect: "Jarang terjadi",
+                risk: "Rendah",
+                warning: "Jangan dikonsumsi berlebihan",
+            },
+            {
+                name: "Ibuprofen",
+                category: "Anti Inflamasi",
+                type: "Obat Bebas Terbatas",
+                herbal: false,
+                age: "12+",
+                function: "Mengurangi nyeri dan peradangan",
+                dosage: "2x sehari",
+                reminder: "09:00, 21:00",
+                stock: "Tersedia",
+                sideEffect: "Sakit lambung",
+                risk: "Sedang",
+                warning: "Tidak dianjurkan untuk maag berat",
+            },
+            {
+                name: "Cetirizine",
+                category: "Antihistamin",
+                type: "Obat Bebas",
+                herbal: false,
+                age: "6+",
+                function: "Mengatasi alergi",
+                dosage: "1x malam",
+                reminder: "20:00",
+                stock: "Tersedia",
+                sideEffect: "Mengantuk",
+                risk: "Rendah",
+                warning: "Hindari mengemudi setelah minum",
+            },
+            {
+                name: "Omeprazole",
+                category: "Obat Lambung",
+                type: "Obat Resep",
+                herbal: false,
+                age: "18+",
+                function: "Mengurangi asam lambung",
+                dosage: "1x sebelum makan",
+                reminder: "06:30",
+                stock: "Habis",
+                sideEffect: "Pusing ringan",
+                risk: "Sedang",
+                warning: "Konsultasikan jika penggunaan lama",
+            },
+            {
+                name: "Tolak Angin",
+                category: "Herbal",
+                type: "Obat Herbal",
+                herbal: true,
+                age: "12+",
+                function: "Meredakan masuk angin",
+                dosage: "2x sehari",
+                reminder: "08:00 & 20:00",
+                stock: "Tersedia",
+                sideEffect: "Jarang terjadi",
+                risk: "Rendah",
+                warning: "Perhatikan kandungan gula",
+            },
+            {
+                name: "Jahe Merah",
+                category: "Herbal",
+                type: "Minuman Herbal",
+                herbal: true,
+                age: "Semua Usia",
+                function: "Menghangatkan tubuh",
+                dosage: "1x sehari",
+                reminder: "19:00",
+                stock: "Tersedia",
+                sideEffect: "Panas lambung",
+                risk: "Rendah",
+                warning: "Hindari konsumsi berlebihan",
+            },
+            {
+                name: "Curcuma Plus",
+                category: "Herbal",
+                type: "Vitamin Herbal",
+                herbal: true,
+                age: "Anak-anak",
+                function: "Meningkatkan nafsu makan",
+                dosage: "1x sehari",
+                reminder: "07:00",
+                stock: "Tersedia",
+                sideEffect: "Jarang terjadi",
+                risk: "Rendah",
+                warning: "Gunakan sesuai dosis",
+            },
+        ];
 
-<!-- HISTORY SECTION -->
-<div id="history" class="section" style="padding-top: 2.5rem;">
-  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem;">
-    <div class="section-title" style="margin-bottom:0;">📋 Riwayat Konsumsi</div>
-    <button class="btn btn-danger btn-sm" onclick="clearHistory()">Hapus Semua</button>
-  </div>
-  <div id="history-list"></div>
-  <div id="empty-history" class="empty-state" style="display:none;">
-    <div class="emoji">📋</div>
-    <p>Belum ada riwayat. Tandai obat sudah diminum terlebih dahulu.</p>
-  </div>
-</div>
+        // Element Selector
+        const searchInput = document.getElementById("searchInput");
+        const categorySelect = document.getElementById("categorySelect");
+        const medicineGrid = document.getElementById("medicineGrid");
 
-<div class="toast" id="toast"></div>
+        // Fungsi Render Kartu Obat ke Layar
+        function renderMedicines() {
+            const searchValue = searchInput.value.toLowerCase();
+            const selectedCategory = categorySelect.value;
 
-<script>
-  // ─── DATA ───
-  let medicines = JSON.parse(localStorage.getItem('farmacare_meds') || '[]');
-  let history = JSON.parse(localStorage.getItem('farmacare_history') || '[]');
-  let timeTags = [];
+            // Filter data yang cocok
+            const filtered = medicines.filter((medicine) => {
+                const matchSearch = medicine.name.toLowerCase().includes(searchValue);
+                const matchCategory = selectedCategory === "Semua" || medicine.category === selectedCategory;
+                return matchSearch && matchCategory;
+            });
 
-  // Default data if empty
-  if (medicines.length === 0) {
-    medicines = [
-      { id: 1, name: "Paracetamol", func: "Meredakan demam dan nyeri ringan hingga sedang", dose: "3x sehari setelah makan", times: ["08:00","14:00","20:00"], taken: false },
-      { id: 2, name: "Amoxicillin", func: "Antibiotik untuk infeksi bakteri", dose: "3x sehari setiap 8 jam", times: ["06:00","14:00","22:00"], taken: false },
-      { id: 3, name: "Vitamin C", func: "Meningkatkan daya tahan tubuh", dose: "1x sehari", times: ["07:00"], taken: false },
-    ];
-    saveMeds();
-  }
+            // Reset tampilan grid sebelum diisi ulang
+            medicineGrid.innerHTML = "";
 
-  function saveMeds() { localStorage.setItem('farmacare_meds', JSON.stringify(medicines)); }
-  function saveHistory() { localStorage.setItem('farmacare_history', JSON.stringify(history)); }
+            // Jika hasil filter kosong
+            if (filtered.length === 0) {
+                medicineGrid.innerHTML = `<p class="text-gray-500 col-span-full text-center py-10">Obat tidak ditemukan.</p>`;
+                return;
+            }
 
-  // ─── NAVIGATION ───
-  function showSection(id) {
-    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-    document.getElementById(id).classList.add('active');
-    document.querySelectorAll('.nav-tab').forEach((t,i) => {
-      const ids = ['home','medicines','reminders','history'];
-      t.classList.toggle('active', ids[i] === id);
-    });
-    if (id === 'medicines') renderMedicines();
-    if (id === 'reminders') renderReminders();
-    if (id === 'history') renderHistory();
-    if (id === 'home') updateStats();
-    window.scrollTo(0,0);
-  }
+            // Membangun element HTML untuk setiap kartu obat
+            filtered.forEach((medicine) => {
+                const badgeColor = medicine.risk === "Rendah" ? "bg-green-100 text-green-700" : "bg-yellow-100 text-yellow-700";
+                
+                const cardHtml = `
+                    <div class="bg-white rounded-3xl shadow-lg p-6 hover:shadow-2xl transition">
+                        <div class="flex justify-between items-center mb-4">
+                            <h2 class="text-2xl font-bold text-blue-700">${medicine.name}</h2>
+                            <span class="px-3 py-1 rounded-full text-sm font-semibold ${badgeColor}">
+                                Risiko ${medicine.risk}
+                            </span>
+                        </div>
 
-  // ─── STATS ───
-  function updateStats() {
-    document.getElementById('stat-meds').textContent = medicines.length;
-    document.getElementById('stat-taken').textContent = medicines.filter(m => m.taken).length;
-    document.getElementById('stat-history').textContent = history.length;
-  }
+                        <div class="space-y-2 text-gray-700">
+                            <p><b>Kategori:</b> ${medicine.category}</p>
+                            <p><b>Jenis:</b> ${medicine.type}</p>
+                            <p><b>Usia:</b> ${medicine.age}</p>
+                            <p><b>Fungsi:</b> ${medicine.function}</p>
+                            <p><b>Dosis:</b> ${medicine.dosage}</p>
+                            <p><b>Pengingat:</b> ${medicine.reminder}</p>
+                            <p><b>Efek Samping:</b> ${medicine.sideEffect}</p>
+                            <p><b>Peringatan:</b> ${medicine.warning}</p>
+                            <p><b>Stok:</b> ${medicine.stock}</p>
+                            <p><b>Herbal:</b> ${medicine.herbal ? "Ya" : "Tidak"}</p>
+                        </div>
 
-  // ─── SEARCH ───
-  function searchMedicine() {
-    const q = document.getElementById('search-input').value.trim().toLowerCase();
-    const found = medicines.find(m => m.name.toLowerCase().includes(q));
-    const resEl = document.getElementById('search-result');
-    const noEl = document.getElementById('no-result');
-    if (!q) { resEl.style.display='none'; noEl.style.display='none'; return; }
-    if (found) {
-      document.getElementById('res-name').textContent = found.name;
-      document.getElementById('res-func').textContent = found.func || '–';
-      document.getElementById('res-dose').textContent = found.dose || '–';
-      document.getElementById('res-rem').textContent = (found.times||[]).join(', ') || '–';
-      resEl.style.display='block';
-      noEl.style.display='none';
-    } else {
-      resEl.style.display='none';
-      noEl.style.display='block';
-    }
-  }
-
-  // ─── RENDER CARDS ───
-  function makeCard(m, withDelete=false) {
-    return `
-    <div class="medicine-card ${m.taken?'taken':''}" id="card-${m.id}">
-      <div class="card-top">
-        <div class="med-name">${m.name}</div>
-        <span class="status-badge ${m.taken?'badge-taken':'badge-active'}">${m.taken?'✓ Sudah':'Aktif'}</span>
-      </div>
-      <div class="med-info"><strong>Fungsi:</strong> ${m.func||'–'}</div>
-      <div class="med-info"><strong>Dosis:</strong> ${m.dose||'–'}</div>
-      <div class="med-reminder">🕐 ${(m.times||[]).join(' · ') || '–'}</div>
-      <div class="card-actions">
-        <button class="btn btn-primary btn-sm" style="flex:1;" onclick="markTaken(${m.id})" ${m.taken?'disabled style="opacity:.5;cursor:not-allowed;"':''}>
-          ${m.taken?'✓ Sudah Diminum':'Tandai Sudah Diminum'}
-        </button>
-        ${withDelete?`<button class="btn btn-danger btn-sm" onclick="deleteMedicine(${m.id})">🗑</button>`:''}
-      </div>
-    </div>`;
-  }
-
-  function renderMedicines() {
-    const el = document.getElementById('medicine-list');
-    if (medicines.length === 0) {
-      el.innerHTML = '';
-      document.getElementById('empty-meds').style.display = 'block';
-    } else {
-      document.getElementById('empty-meds').style.display = 'none';
-      el.innerHTML = medicines.map(m => makeCard(m, false)).join('');
-    }
-  }
-
-  function renderReminders() {
-    const el = document.getElementById('reminder-list');
-    if (medicines.length === 0) {
-      el.innerHTML = '';
-      document.getElementById('empty-reminders').style.display = 'block';
-    } else {
-      document.getElementById('empty-reminders').style.display = 'none';
-      el.innerHTML = medicines.map(m => makeCard(m, true)).join('');
-    }
-  }
-
-  // ─── MARK TAKEN ───
-  function markTaken(id) {
-    const med = medicines.find(m => m.id === id);
-    if (!med || med.taken) return;
-    med.taken = true;
-    saveMeds();
-    const now = new Date();
-    history.unshift({ id: Date.now(), medId: id, name: med.name, time: now.toLocaleTimeString('id-ID', {hour:'2-digit',minute:'2-digit'}), date: now.toLocaleDateString('id-ID', {weekday:'long', day:'numeric', month:'long', year:'numeric'}) });
-    saveHistory();
-    showToast(`✅ ${med.name} ditandai sudah diminum!`);
-    renderMedicines();
-    renderReminders();
-    updateStats();
-  }
-
-  // ─── ADD MEDICINE ───
-  function addTimeTag() {
-    const t = document.getElementById('f-time').value;
-    if (!t || timeTags.includes(t)) return;
-    timeTags.push(t);
-    renderTimeTags();
-    document.getElementById('f-time').value = '';
-  }
-
-  function removeTimeTag(t) {
-    timeTags = timeTags.filter(x => x !== t);
-    renderTimeTags();
-  }
-
-  function renderTimeTags() {
-    document.getElementById('time-tags').innerHTML = timeTags.map(t =>
-      `<div class="time-tag">${t} <button onclick="removeTimeTag('${t}')">×</button></div>`
-    ).join('');
-  }
-
-  function addMedicine() {
-    const name = document.getElementById('f-name').value.trim();
-    if (!name) { showToast('⚠️ Nama obat wajib diisi!'); return; }
-    const med = {
-      id: Date.now(),
-      name,
-      func: document.getElementById('f-func').value.trim() || '–',
-      dose: document.getElementById('f-dose').value.trim() || '–',
-      times: [...timeTags],
-      taken: false
-    };
-    medicines.push(med);
-    saveMeds();
-    document.getElementById('f-name').value = '';
-    document.getElementById('f-func').value = '';
-    document.getElementById('f-dose').value = '';
-    timeTags = [];
-    renderTimeTags();
-    renderReminders();
-    showToast(`💊 ${name} berhasil ditambahkan!`);
-    updateStats();
-  }
-
-  function deleteMedicine(id) {
-    if (!confirm('Hapus obat ini?')) return;
-    medicines = medicines.filter(m => m.id !== id);
-    saveMeds();
-    renderReminders();
-    updateStats();
-    showToast('🗑 Obat dihapus.');
-  }
-
-  // ─── HISTORY ───
-  function renderHistory() {
-    const el = document.getElementById('history-list');
-    if (history.length === 0) {
-      el.innerHTML = '';
-      document.getElementById('empty-history').style.display = 'block';
-      return;
-    }
-    document.getElementById('empty-history').style.display = 'none';
-    const grouped = {};
-    history.forEach(h => { if (!grouped[h.date]) grouped[h.date]=[]; grouped[h.date].push(h); });
-    el.innerHTML = Object.entries(grouped).map(([date, items]) =>
-      `<div class="history-date">${date}</div>` +
-      items.map(h => `<div class="history-item"><span class="med-col">💊 ${h.name}</span><span class="time-col">${h.time}</span><span class="check">✓</span></div>`).join('')
-    ).join('');
-  }
-
-  function clearHistory() {
-    if (!confirm('Hapus semua riwayat?')) return;
-    history = [];
-    saveHistory();
-    renderHistory();
-    showToast('🗑 Riwayat dihapus.');
-  }
-
-  // ─── TOAST ───
-  function showToast(msg) {
-    const t = document.getElementById('toast');
-    t.textContent = msg;
-    t.style.display = 'block';
-    setTimeout(() => { t.style.display = 'none'; }, 3000);
-  }
-
-  // ─── RESET TAKEN STATUS DAILY ───
-  const today = new Date().toDateString();
-  if (localStorage.getItem('farmacare_reset') !== today) {
-    medicines.forEach(m => m.taken = false);
-    saveMeds();
-    localStorage.setItem('farmacare_reset', today);
-  }
-
-  // ─── INIT ───
-  updateStats();
-  renderMedicines();
-
-  // Browser Notification reminder
-  if ('Notification' in window && Notification.permission !== 'denied') {
-    Notification.requestPermission();
-  }
-  setInterval(() => {
-    const now = new Date();
-    const hhmm = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
-    medicines.forEach(m => {
-      if (!m.taken && m.times && m.times.includes(hhmm)) {
-        if (Notification.permission === 'granted') {
-          new Notification('⏰ FarmaCare', { body: `Waktunya minum ${m.name}!`, icon: '' });
+                        <div class="mt-6 flex gap-3">
+                            <button class="flex-1 bg-green-600 hover:bg-green-700 text-white py-3 rounded-xl transition">
+                                Sudah Diminum
+                            </button>
+                            <button class="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl transition">
+                                Detail
+                            </button>
+                        </div>
+                    </div>
+                `;
+                medicineGrid.innerHTML += cardHtml;
+            });
         }
-      }
-    });
-  }, 60000);
-</script>
+
+        searchInput.addEventListener("input", renderMedicines);
+        categorySelect.addEventListener("change", renderMedicines);
+
+        renderMedicines();
+    </script>
 </body>
 </html>
 
+```
